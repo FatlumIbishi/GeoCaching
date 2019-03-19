@@ -2,6 +2,8 @@
 using Microsoft.Maps.MapControl.WPF;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,6 +19,61 @@ using System.Windows.Shapes;
 
 namespace Geocaching
 {
+    public class AppDbContext : DbContext
+    {
+        public DbSet<Person> Artist { get; set; }
+        public DbSet<Geocache> Producer { get; set; }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder options)
+        {
+            options.UseSqlServer(@"Data Source=(local)\SQLEXPRESS;Initial Catalog=Geocaching;Integrated Security=True");
+        }
+
+        protected override void OnModelCreating(ModelBuilder model)
+        {
+           // model.Entity<>().HasKey(ap => new { });
+        }
+    }
+    public class Person
+    {
+        [Key]
+        public int ID { get; set; }
+
+        [Column(TypeName= "nvarchar(50)")]
+        public string FirstName { get; set; }
+
+        [Column(TypeName = "nvarchar(50)")]
+        public string LastName { get; set; }
+
+        public float Latitude { get; set; }
+        public float Longitude { get; set; }
+
+        [Column(TypeName = "nvarchar(50)")]
+        public string Country { get; set; }
+
+        [Column(TypeName = "nvarchar(50)")]
+        public string City { get; set; }
+
+        [Column(TypeName = "nvarchar(50)")]
+        public string StreetName { get; set; }
+        public Int16 StreetNumber { get; set; }
+
+    }
+    public class Geocache
+    {
+        public int ID { get; set; }
+        public int PersonID { get; set; }
+
+        public float Latitude { get; set; }
+        public float Longitude { get; set; }
+
+        [Column(TypeName = "nvarchar(255)")]
+        public string Contents { get; set; }
+
+        [Column(TypeName = "nvarchar(255)")]
+        public string Message { get; set; }
+
+    }
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
@@ -81,6 +138,7 @@ namespace Geocaching
 
                 if (e.LeftButton == MouseButtonState.Pressed)
                 {
+                    
                     OnMapLeftClick();
                 }
             };
